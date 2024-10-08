@@ -1,0 +1,171 @@
+Arquivo de Saída - Analisador Léxico 
+
+Token                Lexema               Linha      Coluna    
+--------------------------------------------------------------
+Palavra Reservada    iama                 1          1         
+Identificador        main                 1          2         
+simb_par_e           (                    1          2         
+simb_par_d           )                    1          2         
+simb_chav_e          {                    1          3         
+Palavra Reservada    pakta                2          5         
+Identificador        x                    2          6         
+simb_atr             =                    2          7         
+Numero               10                   2          8         
+simb_pv              ;                    2          8         
+Palavra Reservada    pakta                3          5         
+Identificador        y                    3          6         
+simb_atr             =                    3          7         
+Numero               20                   3          8         
+simb_pv              ;                    3          8         
+Palavra Reservada    pakta                4          5         
+Identificador        resultado            4          6         
+simb_pv              ;                    4          6         
+Palavra Reservada    ahe                  5          5         
+simb_par_e           (                    5          6         
+Identificador        x                    5          6         
+simb_menor           <                    5          7         
+Identificador        y                    5          8         
+simb_par_d           )                    5          8         
+simb_chav_e          {                    5          9         
+Identificador        resultado            6          9         
+simb_atr             =                    6          10        
+Identificador        x                    6          11        
+simb_adc             +                    6          12        
+Identificador        y                    6          13        
+simb_pv              ;                    6          13        
+simb_chav_d          }                    7          5         
+Palavra Reservada    agura                7          6         
+simb_chav_e          {                    7          7         
+Identificador        resultado            8          9         
+simb_atr             =                    8          10        
+Identificador        x                    8          11        
+simb_subt            -                    8          12        
+Identificador        y                    8          13        
+simb_pv              ;                    8          13        
+simb_chav_d          }                    9          5         
+Palavra Reservada    agaypihi             10         5         
+simb_par_e           (                    10         6         
+Identificador        resultado            10         6         
+simb_par_d           )                    10         6         
+simb_chav_e          {                    10         7         
+Palavra Reservada    patxitxa             11         9         
+Numero               10                   11         10        
+simb_dp              :                    11         10        
+Identificador        resultado            12         13        
+simb_adc_atr         +=                   12         14        
+Numero               5                    12         15        
+simb_pv              ;                    12         15        
+Palavra Reservada    hatay                13         13        
+simb_pv              ;                    13         13        
+Palavra Reservada    patxitxa             14         9         
+Numero               20                   14         10        
+simb_dp              :                    14         10        
+Identificador        resultado            15         13        
+simb_subt_atr        -=                   15         14        
+Numero               3                    15         15        
+simb_pv              ;                    15         15        
+Palavra Reservada    hatay                16         13        
+simb_pv              ;                    16         13        
+Palavra Reservada    uxetey               17         9         
+simb_dp              :                    17         9         
+Identificador        resultado            18         13        
+simb_atr             =                    18         14        
+Numero               0                    18         15        
+simb_pv              ;                    18         15        
+simb_chav_d          }                    19         5         
+Palavra Reservada    apiak                20         5         
+simb_par_e           (                    20         6         
+Identificador        x                    20         6         
+simb_menor           <                    20         7         
+Numero               50                   20         8         
+simb_par_d           )                    20         8         
+simb_chav_e          {                    20         9         
+Identificador        x                    21         9         
+simb_adc_atr         +=                   21         10        
+Numero               5                    21         11        
+simb_pv              ;                    21         11        
+simb_chav_d          }                    22         5         
+Palavra Reservada    dxaha                23         5         
+simb_par_e           (                    23         6         
+Palavra Reservada    pakta                23         6         
+Identificador        i                    23         7         
+simb_atr             =                    23         8         
+Numero               0                    23         9         
+simb_pv              ;                    23         9         
+Identificador        i                    23         10        
+simb_menor           <                    23         11        
+Numero               10                   23         12        
+simb_pv              ;                    23         12        
+Identificador        i                    23         13        
+simb_incr            ++                   23         13        
+simb_par_d           )                    23         13        
+simb_chav_e          {                    23         14        
+Identificador        resultado            24         9         
+simb_adc_atr         +=                   24         10        
+Identificador        i                    24         11        
+simb_pv              ;                    24         11        
+simb_chav_d          }                    25         5         
+Palavra Reservada    pakta                26         5         
+Identificador        a                    26         6         
+simb_atr             =                    26         7         
+Numero               1                    26         8         
+simb_pv              ;                    26         8         
+Palavra Reservada    pakta                27         5         
+Identificador        b                    27         6         
+simb_atr             =                    27         7         
+Numero               0                    27         8         
+simb_pv              ;                    27         8         
+Palavra Reservada    pakta                28         5         
+Identificador        c                    28         6         
+simb_pv              ;                    28         6         
+Identificador        c                    29         5         
+simb_atr             =                    29         6         
+Identificador        a                    29         7         
+simb_e_log           &&                   29         8         
+Identificador        b                    29         9         
+simb_pv              ;                    29         9         
+Identificador        c                    30         5         
+simb_atr             =                    30         6         
+Identificador        a                    30         7         
+simb_ou_log          ||                   30         8         
+Identificador        b                    30         9         
+simb_pv              ;                    30         9         
+Identificador        resultado            31         5         
+simb_atr             =                    31         6         
+Identificador        calcula_soma         31         7         
+simb_par_e           (                    31         7         
+Identificador        x                    31         7         
+simb_vg              ,                    31         7         
+Identificador        y                    31         8         
+simb_par_d           )                    31         8         
+simb_pv              ;                    31         8         
+Palavra Reservada    aniagha              32         5         
+Identificador        cores                32         6         
+simb_chav_e          {                    32         7         
+Identificador        vermelho             32         8         
+simb_vg              ,                    32         8         
+Identificador        verde                32         9         
+simb_vg              ,                    32         9         
+Identificador        azul                 32         10        
+simb_chav_d          }                    32         11        
+simb_pv              ;                    32         11        
+Palavra Reservada    muka                 33         5         
+Identificador        dado                 33         6         
+simb_pv              ;                    33         6         
+simb_chav_d          }                    34         1         
+Palavra Reservada    pakta                35         1         
+Identificador        calcula_soma         35         2         
+simb_par_e           (                    35         2         
+Palavra Reservada    pakta                35         2         
+Identificador        a                    35         3         
+simb_vg              ,                    35         3         
+Palavra Reservada    pakta                35         4         
+Identificador        b                    35         5         
+simb_par_d           )                    35         5         
+simb_chav_e          {                    35         6         
+Palavra Reservada    apetxuk              36         5         
+Identificador        a                    36         6         
+simb_adc             +                    36         7         
+Identificador        b                    36         8         
+simb_pv              ;                    36         8         
+simb_chav_d          }                    37         1  
