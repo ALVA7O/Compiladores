@@ -1,0 +1,384 @@
+#include <stdio.h>
+#include <string.h>
+#include "Lexico.h"
+
+// Índice para rastreamento dos tokens
+int token_index = 0;
+int debug = 1; // 1 para ativar depuração, 0 para desativar
+
+
+void parse_bloco(); 
+void parse_condicional(); 
+void parse_while();
+void parse_for();
+void parse_expressao();
+
+// Funções auxiliares para manipular tokens
+Token obter_token_atual() {
+    return tokens[token_index];
+}
+
+void debug_token(const char *contexto) {
+    if (debug) {
+        Token token = obter_token_atual();
+        printf("[DEBUG - %s]: Tipo='%s', Valor='%s', Linha=%d, Coluna=%d\n",
+               contexto, token.tipo, token.valor, token.linha, token.coluna);
+    }
+}
+
+void debug_msg(const char *msg) {
+    if (debug) {
+        printf("[DEBUG]: %s\n", msg);
+    }
+}
+
+void avancar_token() {
+    if (token_index < token_count - 1) {
+        token_index++;
+    }
+}
+
+int token_eh(const char *tipo) {
+    return strcmp(obter_token_atual().tipo, tipo) == 0;
+}
+
+// Funções de parsing
+void parse_while() {
+    debug_msg("Iniciando análise do laço 'while'");
+
+    if (token_eh("Palavra Reservada") && strcmp(obter_token_atual().valor, "apiak") == 0) {
+        avancar_token(); 
+
+        if (token_eh("simb_par_e")) {
+            avancar_token();
+            parse_expressao();
+
+            if (token_eh("simb_par_d")) {
+                avancar_token(); 
+
+                if (token_eh("simb_chav_e")) {
+                    avancar_token();
+                    parse_bloco();
+
+                    if (token_eh("simb_chav_d")) {
+                        avancar_token(); 
+                    } else {
+                        printf("Erro: '}' esperado ao final do bloco 'while' na linha %d\n", obter_token_atual().linha);
+                        return;
+                    }
+                } else {
+                    printf("Erro: '{' esperado após a condição do 'while' na linha %d\n", obter_token_atual().linha);
+                    return;
+                }
+            } else {
+                printf("Erro: ')' esperado após a condição do 'while' na linha %d\n", obter_token_atual().linha);
+                return;
+            }
+        } else {
+            printf("Erro: '(' esperado após 'while' na linha %d\n", obter_token_atual().linha);
+            return;
+        }
+    }
+}
+
+
+void parse_for() {
+    debug_msg("Iniciando análise do laço 'for'");
+
+    if (token_eh("Palavra Reservada") && strcmp(obter_token_atual().valor, "dxaha") == 0) {
+        avancar_token(); 
+
+        if (token_eh("simb_par_e")) {
+            avancar_token(); 
+            parse_expressao(); 
+
+            if (token_eh("simb_pv")) {
+                avancar_token(); 
+                parse_expressao(); 
+
+                if (token_eh("simb_pv")) {
+                    avancar_token(); 
+                    parse_expressao(); 
+
+                    if (token_eh("simb_par_d")) {
+                        avancar_token(); 
+
+                        if (token_eh("simb_chav_e")) {
+                            avancar_token(); 
+                            parse_bloco(); 
+
+                            if (token_eh("simb_chav_d")) {
+                                avancar_token(); 
+                            } else {
+                                printf("Erro: '}' esperado ao final do bloco 'for' na linha %d\n", obter_token_atual().linha);
+                                return;
+                            }
+                        } else {
+                            printf("Erro: '{' esperado após o 'for' na linha %d\n", obter_token_atual().linha);
+                            return;
+                        }
+                    } else {
+                        printf("Erro: ')' esperado após o incremento no 'for' na linha %d\n", obter_token_atual().linha);
+                        return;
+                    }
+                } else {
+                    printf("Erro: ';' esperado após a condição no 'for' na linha %d\n", obter_token_atual().linha);
+                    return;
+                }
+            } else {
+                printf("Erro: ';' esperado após a inicialização no 'for' na linha %d\n", obter_token_atual().linha);
+                return;
+            }
+        } else {
+            printf("Erro: '(' esperado após 'for' na linha %d\n", obter_token_atual().linha);
+            return;
+        }
+    }
+}
+
+void parse_expressao() {
+    debug_msg("Iniciando análise de expressão");
+
+    if (token_eh("Identificador") || token_eh("Numero")) {
+        avancar_token(); 
+
+        
+        while (token_eh("simb_adc") || token_eh("simb_subt") || token_eh("simb_mult") || 
+               token_eh("simb_div") || token_eh("simb_mod") || 
+               token_eh("simb_menor") || token_eh("simb_maior") || 
+               token_eh("simb_igual_a") || token_eh("simb_dif")) {
+            avancar_token(); 
+
+            if (token_eh("Identificador") || token_eh("Numero")) {
+                avancar_token(); 
+            } else {
+                printf("Erro: Operando esperado após operador na linha %d\n", obter_token_atual().linha);
+                return;
+            }
+        }
+
+        if (token_eh("simb_pt")) {
+            avancar_token();
+
+            if (token_eh("Numero")) {
+                avancar_token();
+            } else {
+                printf("Erro: Dígito esperado após ponto na linha %d\n", obter_token_atual().linha);
+                return;
+            }
+        }
+    } else {
+        printf("Erro: Identificador ou número esperado na linha %d\n", obter_token_atual().linha);
+        return;
+    }
+
+    debug_msg("Fim da expressão");
+}
+
+
+
+
+void parse_condicional() {
+    debug_msg("Iniciando análise da estrutura 'if'");
+
+    if (token_eh("Palavra Reservada") && strcmp(obter_token_atual().valor, "ahe") == 0) {
+        debug_token("Início do 'if'");
+        avancar_token();
+
+        if (token_eh("simb_par_e")) {
+            debug_msg("Parênteses de abertura encontrado");
+            avancar_token();
+            parse_expressao(); 
+
+            if (token_eh("simb_par_d")) {
+                debug_msg("Parênteses de fechamento encontrado");
+                avancar_token();
+
+                if (token_eh("simb_chav_e")) {
+                    debug_msg("Início do bloco do 'if'");
+                    avancar_token();
+                    parse_bloco();
+
+                    if (token_eh("simb_chav_d")) {
+                        debug_msg("Fim do bloco do 'if'");
+                        avancar_token();
+
+                        if (token_eh("Palavra Reservada") && strcmp(obter_token_atual().valor, "agura") == 0) {
+                            debug_token("Início do 'else'");
+                            avancar_token();
+
+                            if (token_eh("simb_chav_e")) {
+                                debug_msg("Início do bloco do 'else'");
+                                avancar_token();
+                                parse_bloco();
+
+                                if (token_eh("simb_chav_d")) {
+                                    debug_msg("Fim do bloco do 'else'");
+                                    avancar_token();
+                                } else {
+                                    printf("Erro: '}' esperado ao final do bloco 'else' na linha %d\n", obter_token_atual().linha);
+                                    return;
+                                }
+                            } else {
+                                printf("Erro: '{' esperado após 'else' na linha %d\n", obter_token_atual().linha);
+                                return;
+                            }
+                        }
+                    } else {
+                        printf("Erro: '}' esperado ao final do bloco 'if' na linha %d\n", obter_token_atual().linha);
+                        return;
+                    }
+                } else {
+                    printf("Erro: ')' esperado após a condição do 'if' na linha %d\n", obter_token_atual().linha);
+                    return;
+                }
+            } else {
+                printf("Erro: ')' esperado após a condição do 'if' na linha %d\n", obter_token_atual().linha);
+                return;
+            }
+        } else {
+            printf("Erro: '(' esperado após 'if' na linha %d\n", obter_token_atual().linha);
+            return;
+        }
+    }
+}
+
+
+void parse_bloco() {
+    debug_msg("Iniciando análise de bloco");
+
+    while (token_index < token_count) {
+        if (token_eh("simb_chav_d")) {
+            debug_msg("Fim do bloco encontrado");
+            avancar_token();
+            return;
+        }
+
+        debug_token("Analisando declaração dentro do bloco");
+
+        if (token_eh("Identificador")) {
+            debug_msg("Processando expressão de atribuição");
+            avancar_token();
+
+            if (token_eh("simb_atr")) {
+                avancar_token();
+                parse_expressao();
+
+                if (token_eh("simb_pv")) {
+                    avancar_token();
+                } else {
+                    printf("Erro: ';' esperado ao final da expressão na linha %d\n", obter_token_atual().linha);
+                    return;
+                }
+            } else {
+                printf("Erro: '=' esperado após identificador na linha %d\n", obter_token_atual().linha);
+                return;
+            }
+        } else if (token_eh("Palavra Reservada") && strcmp(obter_token_atual().valor, "apetxuk") == 0) {
+        
+            debug_msg("Processando comando de retorno");
+            avancar_token();
+
+            parse_expressao();
+
+            if (token_eh("simb_pv")) {
+                avancar_token(); 
+            } else {
+                printf("Erro: ';' esperado após 'apetxuk' na linha %d\n", obter_token_atual().linha);
+                return;
+            }
+        } else if (token_eh("Palavra Reservada") && strcmp(obter_token_atual().valor, "pakta") == 0) {
+            debug_msg("Processando declaração de variável");
+            avancar_token();
+
+            if (token_eh("Identificador")) {
+                avancar_token();
+
+                if (token_eh("simb_atr")) {
+                    avancar_token();
+                    parse_expressao();
+
+                    if (token_eh("simb_pv")) {
+                        avancar_token();
+                    } else {
+                        printf("Erro: ';' esperado após declaração na linha %d\n", obter_token_atual().linha);
+                        return;
+                    }
+                } else if (token_eh("simb_pv")) {
+                    avancar_token();
+                } else {
+                    printf("Erro: '=' ou ';' esperado após identificador na linha %d\n", obter_token_atual().linha);
+                    return;
+                }
+            } else {
+                printf("Erro: Identificador esperado após 'pakta' na linha %d\n", obter_token_atual().linha);
+                return;
+            }
+        } else {
+            printf("Erro: Declaração ou estrutura inválida na linha %d\n", obter_token_atual().linha);
+            return;
+        }
+    }
+
+    debug_msg("Fim do bloco");
+}
+
+
+void analisador_sintatico() {
+    debug_msg("Iniciando análise sintática");
+
+    while (token_index < token_count) {
+        debug_token("Analisando novo token");
+
+        if (token_eh("Palavra Reservada") && strcmp(obter_token_atual().valor, "iama") == 0) {
+            debug_msg("Processando função principal");
+            avancar_token();
+
+            if (token_eh("Identificador")) {
+                avancar_token();
+
+                if (token_eh("simb_par_e")) {
+                    avancar_token();
+
+                    if (token_eh("simb_par_d")) {
+                        avancar_token();
+
+                        if (token_eh("simb_chav_e")) {
+                            avancar_token();
+                            parse_bloco(); // Analisa o bloco principal
+
+                            if (token_eh("simb_chav_d")) {
+                                avancar_token();
+                                debug_msg("Função principal analisada com sucesso");
+                                return; // Encerra após a função principal
+                            } else {
+                                printf("Erro: '}' esperado ao final do bloco da função principal na linha %d\n", obter_token_atual().linha);
+                                return;
+                            }
+                        } else {
+                            printf("Erro: '{' esperado após os parênteses da função na linha %d\n", obter_token_atual().linha);
+                            return;
+                        }
+                    } else {
+                        printf("Erro: ')' esperado após o nome da função na linha %d\n", obter_token_atual().linha);
+                        return;
+                    }
+                } else {
+                    printf("Erro: '(' esperado após o nome da função na linha %d\n", obter_token_atual().linha);
+                    return;
+                }
+            } else {
+                printf("Erro: Nome de função esperado após 'iama' na linha %d\n", obter_token_atual().linha);
+                return;
+            }
+        } else {
+            printf("Erro: Declaração ou estrutura inválida no início do código na linha %d\n", obter_token_atual().linha);
+            return;
+        }
+    }
+    
+    debug_msg("Análise sintática finalizada");
+}
+
+
+

@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include "Lexico.h"
+
+void analisador_sintatico();
+
+int main() {
+char codigo_fonte[] =
+    "iama main() {\n"
+    "    pakta a = 5; // Variável inteira\n"
+    "    pakta b = 10; // Variável inteira\n"
+    "    pakta resultado = 0; // Variável para armazenar a soma\n\n"
+    "    resultado = a + b; // Soma de duas variáveis\n\n"
+    "    apetxuk resultado; // Retorna o resultado da soma\n"
+    "}";
+
+    // Análise léxica
+    analisador_lexico(codigo_fonte, tokens, &token_count);
+    printf("\nAnálise Léxica:\n");
+    imprimir_tokens(tokens, token_count);
+
+    // Análise sintática
+    printf("\nAnálise Sintática:\n");
+    analisador_sintatico();
+    system("pause");
+    return 0;
+}
+
+

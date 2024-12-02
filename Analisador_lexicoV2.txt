@@ -1,0 +1,303 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include "Lexico.h"
+
+// Definições globais
+Token tokens[500];
+int token_count = 0;
+
+// Função auxiliar para verificar palavras reservadas
+int eh_palavra_reservada(const char *str) {
+    const char *palavras[] = {
+        "ahe", "agura", "agaypihi", "patxitxa", "uxetey", "apiak", "txo", "dxaha",
+        "hatay", "hamoi", "apetxuk", "pakta", "amix", "guaknioha", "uakapiba",
+        "iama", "nioha", "niip", "iko", "porinok", "hatxa", "hekare", "niognuy",
+        "iata", "hukab", "heuha", "muka", "aniagha", "torno", NULL
+    };
+    for (int i = 0; palavras[i] != NULL; i++) {
+        if (strcmp(str, palavras[i]) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+void analisar_numero(const char *codigo_fonte, int *pos, Token *tokens, int *token_count, int linha, int coluna) {
+    char numero[50];
+    int i = 0;
+    while (isdigit(codigo_fonte[*pos])) {
+        numero[i++] = codigo_fonte[*pos];
+        (*pos)++;
+    }
+    numero[i] = '\0';
+    strcpy(tokens[*token_count].tipo, "Numero");
+    strcpy(tokens[*token_count].valor, numero);
+    tokens[*token_count].linha = linha;
+    tokens[*token_count].coluna = coluna;
+    (*token_count)++;
+}
+
+int eh_operador_delimitador(char c) {
+    const char operadores[] = "+-*/%=&|!<>(){}[];,.:";
+    for (int i = 0; operadores[i] != '\0'; i++) {
+        if (c == operadores[i])
+            return 1;
+    }
+    return 0;
+}
+
+void analisar_operador_delimitador(const char *codigo_fonte, int *pos, Token *tokens, int *token_count, int linha, int coluna) {
+    char operador = codigo_fonte[*pos];
+
+    switch (operador) {
+        case '+':
+            if (codigo_fonte[*pos + 1] == '+') {
+                strcpy(tokens[*token_count].tipo, "simb_incr");
+                strcpy(tokens[*token_count].valor, "++");
+                (*pos)++;
+            } else if (codigo_fonte[*pos + 1] == '=') {
+                strcpy(tokens[*token_count].tipo, "simb_adc_atr");
+                strcpy(tokens[*token_count].valor, "+=");
+                (*pos)++;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_adc");
+                strcpy(tokens[*token_count].valor, "+");
+            }
+            break;
+        case '-':
+            if (codigo_fonte[*pos + 1] == '-') {
+                strcpy(tokens[*token_count].tipo, "simb_decr");
+                strcpy(tokens[*token_count].valor, "--");
+                (*pos)++;
+            } else if (codigo_fonte[*pos + 1] == '=') {
+                strcpy(tokens[*token_count].tipo, "simb_subt_atr");
+                strcpy(tokens[*token_count].valor, "-=");
+                (*pos)++;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_subt");
+                strcpy(tokens[*token_count].valor, "-");
+            }
+            break;
+        case '*':
+            if (codigo_fonte[*pos + 1] == '=') {
+                strcpy(tokens[*token_count].tipo, "simb_mult_atr");
+                strcpy(tokens[*token_count].valor, "*=");
+                (*pos)++;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_mult");
+                strcpy(tokens[*token_count].valor, "*");
+            }
+            break;
+        case '/':
+            if (codigo_fonte[*pos + 1] == '=') {
+                strcpy(tokens[*token_count].tipo, "simb_div_atr");
+                strcpy(tokens[*token_count].valor, "/=");
+                (*pos)++;
+            } else if (codigo_fonte[*pos + 1] == '/') {
+                strcpy(tokens[*token_count].tipo, "Comentario");
+                strcpy(tokens[*token_count].valor, "//");
+                (*pos)++;
+                while (codigo_fonte[*pos] != '\0' && codigo_fonte[*pos] != '\n') {
+                    (*pos)++;
+                }
+                return;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_div");
+                strcpy(tokens[*token_count].valor, "/");
+            }
+            break;
+        case '%':
+            if (codigo_fonte[*pos + 1] == '=') {
+                strcpy(tokens[*token_count].tipo, "simb_mod_atr");
+                strcpy(tokens[*token_count].valor, "%=");
+                (*pos)++;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_mod");
+                strcpy(tokens[*token_count].valor, "%");
+            }
+            break;
+        case '=':
+            if (codigo_fonte[*pos + 1] == '=') {
+                strcpy(tokens[*token_count].tipo, "simb_igual_a");
+                strcpy(tokens[*token_count].valor, "==");
+                (*pos)++;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_atr");
+                strcpy(tokens[*token_count].valor, "=");
+            }
+            break;
+        case '!':
+            if (codigo_fonte[*pos + 1] == '=') {
+                strcpy(tokens[*token_count].tipo, "simb_dif");
+                strcpy(tokens[*token_count].valor, "!=");
+                (*pos)++;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_neg_log");
+                strcpy(tokens[*token_count].valor, "!");
+            }
+            break;
+        case '<':
+            if (codigo_fonte[*pos + 1] == '=') {
+                strcpy(tokens[*token_count].tipo, "simb_menor_igual");
+                strcpy(tokens[*token_count].valor, "<=");
+                (*pos)++;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_menor");
+                strcpy(tokens[*token_count].valor, "<");
+            }
+            break;
+        case '>':
+            if (codigo_fonte[*pos + 1] == '=') {
+                strcpy(tokens[*token_count].tipo, "simb_maior_igual");
+                strcpy(tokens[*token_count].valor, ">=");
+                (*pos)++;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_maior");
+                strcpy(tokens[*token_count].valor, ">");
+            }
+            break;
+        case '&':
+            if (codigo_fonte[*pos + 1] == '&') {
+                strcpy(tokens[*token_count].tipo, "simb_e_log");
+                strcpy(tokens[*token_count].valor, "&&");
+                (*pos)++;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_e");
+                strcpy(tokens[*token_count].valor, "&");
+            }
+            break;
+        case '|':
+            if (codigo_fonte[*pos + 1] == '|') {
+                strcpy(tokens[*token_count].tipo, "simb_ou_log");
+                strcpy(tokens[*token_count].valor, "||");
+                (*pos)++;
+            } else {
+                strcpy(tokens[*token_count].tipo, "simb_ou");
+                strcpy(tokens[*token_count].valor, "|");
+            }
+            break;
+        case ';':
+            strcpy(tokens[*token_count].tipo, "simb_pv");
+            strcpy(tokens[*token_count].valor, ";");
+            break;
+        case ',':
+            strcpy(tokens[*token_count].tipo, "simb_vg");
+            strcpy(tokens[*token_count].valor, ",");
+            break;
+        case '.':
+            strcpy(tokens[*token_count].tipo, "simb_pt");
+            strcpy(tokens[*token_count].valor, ".");
+            break;
+        case ':':
+            strcpy(tokens[*token_count].tipo, "simb_dp");
+            strcpy(tokens[*token_count].valor, ":");
+            break;
+        case '(':
+            strcpy(tokens[*token_count].tipo, "simb_par_e");
+            strcpy(tokens[*token_count].valor, "(");
+            break;
+        case ')':
+            strcpy(tokens[*token_count].tipo, "simb_par_d");
+            strcpy(tokens[*token_count].valor, ")");
+            break;
+        case '{':
+            strcpy(tokens[*token_count].tipo, "simb_chav_e");
+            strcpy(tokens[*token_count].valor, "{");
+            break;
+        case '}':
+            strcpy(tokens[*token_count].tipo, "simb_chav_d");
+            strcpy(tokens[*token_count].valor, "}");
+            break;
+        case '[':
+            strcpy(tokens[*token_count].tipo, "simb_col_e");
+            strcpy(tokens[*token_count].valor, "[");
+            break;
+        case ']':
+            strcpy(tokens[*token_count].tipo, "simb_col_d");
+            strcpy(tokens[*token_count].valor, "]");
+            break;
+        default:
+            printf("Erro léxico na linha %d, coluna %d: caractere inválido '%c'\n", linha, coluna, operador);
+            return;
+    }
+
+    tokens[*token_count].linha = linha;
+    tokens[*token_count].coluna = coluna;
+    (*token_count)++;
+    (*pos)++;
+}
+
+void analisar_identificador(const char *codigo_fonte, int *pos, Token *tokens, int *token_count, int linha, int coluna) {
+    char identificador[50];
+    int i = 0;
+    while (isalnum(codigo_fonte[*pos]) || codigo_fonte[*pos] == '_') {
+        identificador[i++] = codigo_fonte[*pos];
+        (*pos)++;
+    }
+    identificador[i] = '\0';
+    if (eh_palavra_reservada(identificador)) {
+        strcpy(tokens[*token_count].tipo, "Palavra Reservada");
+    } else {
+        strcpy(tokens[*token_count].tipo, "Identificador");
+    }
+    strcpy(tokens[*token_count].valor, identificador);
+    tokens[*token_count].linha = linha;
+    tokens[*token_count].coluna = coluna;
+    (*token_count)++;
+}
+
+void analisar_string(const char *codigo_fonte, int *pos, Token *tokens, int *token_count, int linha, int coluna) {
+    char string[256];
+    int i = 0;
+    (*pos)++;
+    while (codigo_fonte[*pos] != '"' && codigo_fonte[*pos] != '\0') {
+        string[i++] = codigo_fonte[*pos];
+        (*pos)++;
+    }
+    if (codigo_fonte[*pos] == '"')
+        (*pos)++;
+    string[i] = '\0';
+    strcpy(tokens[*token_count].tipo, "String");
+    strcpy(tokens[*token_count].valor, string);
+    tokens[*token_count].linha = linha;
+    tokens[*token_count].coluna = coluna;
+    (*token_count)++;
+}
+
+void analisador_lexico(const char *codigo_fonte, Token *tokens, int *token_count) {
+    int linha = 1, coluna = 1, pos = 0;
+    while (codigo_fonte[pos] != '\0') {
+        if (isspace(codigo_fonte[pos])) {
+            if (codigo_fonte[pos] == '\n') {
+                linha++;
+                coluna = 1;
+            } else {
+                coluna++;
+            }
+            pos++;
+            continue;
+        }
+        if (codigo_fonte[pos] == '"') {
+            analisar_string(codigo_fonte, &pos, tokens, token_count, linha, coluna);
+        } else if (isalpha(codigo_fonte[pos]) || codigo_fonte[pos] == '_') {
+            analisar_identificador(codigo_fonte, &pos, tokens, token_count, linha, coluna);
+        } else if (isdigit(codigo_fonte[pos])) {
+            analisar_numero(codigo_fonte, &pos, tokens, token_count, linha, coluna);
+        } else if (eh_operador_delimitador(codigo_fonte[pos])) {
+            analisar_operador_delimitador(codigo_fonte, &pos, tokens, token_count, linha, coluna);
+        } else {
+            coluna++;
+            pos++;
+        }
+    }
+}
+
+void imprimir_tokens(Token *tokens, int token_count) {
+    printf("%-20s %-20s %-10s %-10s\n", "Token", "Lexema", "Linha", "Coluna");
+    printf("--------------------------------------------------------------\n");
+    for (int i = 0; i < token_count; i++) {
+        printf("%-20s %-20s %-10d %-10d\n", tokens[i].tipo, tokens[i].valor, tokens[i].linha, tokens[i].coluna);
+    }
+}
+
+

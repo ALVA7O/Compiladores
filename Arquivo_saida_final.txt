@@ -1,0 +1,62 @@
+
+Anßlise LÚxica:
+Token                Lexema               Linha      Coluna
+--------------------------------------------------------------
+Palavra Reservada    iama                 1          1
+Identificador        main                 1          2
+simb_par_e           (                    1          2
+simb_par_d           )                    1          2
+simb_chav_e          {                    1          3
+Palavra Reservada    pakta                2          5
+Identificador        a                    2          6
+simb_atr             =                    2          7
+Numero               5                    2          8
+simb_pv              ;                    2          8
+Palavra Reservada    pakta                3          5
+Identificador        b                    3          6
+simb_atr             =                    3          7
+Numero               10                   3          8
+simb_pv              ;                    3          8
+Palavra Reservada    pakta                4          5
+Identificador        resultado            4          6
+simb_atr             =                    4          7
+Numero               0                    4          8
+simb_pv              ;                    4          8
+Identificador        resultado            6          5
+simb_atr             =                    6          6
+Identificador        a                    6          7
+simb_adc             +                    6          8
+Identificador        b                    6          9
+simb_pv              ;                    6          9
+Palavra Reservada    apetxuk              8          5
+Identificador        resultado            8          6
+simb_pv              ;                    8          6
+simb_chav_d          }                    9          1
+
+Anßlise Sintßtica:
+[DEBUG]: Iniciando anßlise sintßtica
+[DEBUG - Analisando novo token]: Tipo='Palavra Reservada', Valor='iama', Linha=1, Coluna=1
+[DEBUG]: Processando funþÒo principal
+[DEBUG]: Iniciando anßlise de bloco
+[DEBUG - Analisando declaraþÒo dentro do bloco]: Tipo='Palavra Reservada', Valor='pakta', Linha=2, Coluna=5
+[DEBUG]: Processando declaraþÒo de varißvel
+[DEBUG]: Iniciando anßlise de expressÒo
+[DEBUG]: Fim da expressÒo
+[DEBUG - Analisando declaraþÒo dentro do bloco]: Tipo='Palavra Reservada', Valor='pakta', Linha=3, Coluna=5
+[DEBUG]: Processando declaraþÒo de varißvel
+[DEBUG]: Iniciando anßlise de expressÒo
+[DEBUG]: Fim da expressÒo
+[DEBUG - Analisando declaraþÒo dentro do bloco]: Tipo='Palavra Reservada', Valor='pakta', Linha=4, Coluna=5
+[DEBUG]: Processando declaraþÒo de varißvel
+[DEBUG]: Iniciando anßlise de expressÒo
+[DEBUG]: Fim da expressÒo
+[DEBUG - Analisando declaraþÒo dentro do bloco]: Tipo='Identificador', Valor='resultado', Linha=6, Coluna=5
+[DEBUG]: Processando expressÒo de atribuiþÒo
+[DEBUG]: Iniciando anßlise de expressÒo
+[DEBUG]: Fim da expressÒo
+[DEBUG - Analisando declaraþÒo dentro do bloco]: Tipo='Palavra Reservada', Valor='apetxuk', Linha=8, Coluna=5
+[DEBUG]: Processando comando de retorno
+[DEBUG]: Iniciando anßlise de expressÒo
+[DEBUG]: Fim da expressÒo
+[DEBUG]: Fim do bloco encontrado
+[DEBUG]: FunþÒo principal analisada com sucesso

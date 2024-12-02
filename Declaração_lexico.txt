@@ -1,0 +1,20 @@
+#ifndef LEXICO_H
+#define LEXICO_H
+
+// Estrutura do Token
+typedef struct {
+    char tipo[50];
+    char valor[50];
+    int linha;
+    int coluna;
+} Token;
+
+// Declaração das variáveis globais para tokens
+extern Token tokens[500];
+extern int token_count;
+
+// Declarações das funções do analisador léxico
+void analisador_lexico(const char *codigo_fonte, Token *tokens, int *token_count);
+void imprimir_tokens(Token *tokens, int token_count);
+
+#endif
